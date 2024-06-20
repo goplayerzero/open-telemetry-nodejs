@@ -7,8 +7,6 @@ const express = require('express');
 const cors = require('cors');
 const logger = require('./logger');
 
-
-
 const app = express();
 
 app.options('/api/customers', cors())
