@@ -131,7 +131,7 @@ dist
 
 # JetBrains
 
-.idea
+.idea/
 
 # npm package lock
 package-lock.json
