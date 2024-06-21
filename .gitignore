@@ -128,3 +128,11 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# JetBrains
+
+.idea/
+
+# npm package lock
+package-lock.json
+

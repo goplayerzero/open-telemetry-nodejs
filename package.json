@@ -1,0 +1,15 @@
+{
+  "name": "playerzeronodeexample",
+  "version": "1.0.0",
+  "description": "Sample of playerzero node",
+  "scripts": {
+    "client": "cd client && npm start",
+    "server-winston": "cd server-winston && npm start",
+    "server-pino": "cd server-pino && npm start",
+    "start-winston": "concurrently \"npm run client\" \"npm run server-winston\" ",
+    "start-pino": "concurrently \"npm run client\" \"npm run server-pino\" "
+  },
+  "author": "Brad Morris",
+  "url": "https://www.playerzero.ai/",
+  "license": "MIT"
+}
