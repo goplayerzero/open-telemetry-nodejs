@@ -63,7 +63,7 @@ export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
-export NODE_OPTIONS="--require dotenv/config --require @opentelemetry/auto-instrumentations-node/register"
+export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 node server.js
 ```
 Without dotenv and using node command line to set requires
@@ -101,9 +101,9 @@ const logExporter = new OTLPLogExporter();
 const loggerProvider = new LoggerProvider({
 // without resource we don't have proper service.name, service.version correlated with logs
   resource: detectResourcesSync({
-// this have to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
-    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync],
-  }),
+// this has to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
+// see https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_resources.html
+    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync, osDetectorSync],  }),
 });
 
 loggerProvider.addLogRecordProcessor(
