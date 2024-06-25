@@ -52,8 +52,9 @@ const logExporter = new OTLPLogExporter();
 const loggerProvider = new LoggerProvider({
 // without resource we don't have proper service.name, service.version correlated with logs
   resource: detectResourcesSync({
-// this have to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
-    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync],
+// this has to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
+// See https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_resources.html    
+    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync, osDetectorSync],
   }),
 });
 
@@ -63,7 +64,8 @@ loggerProvider.addLogRecordProcessor(
 logsAPI.logs.setGlobalLoggerProvider(loggerProvider);
 ```
 
-For pino, add a transport with a target pino-opentelemetry-transport like this:
+For pino, add a transport with a target pino-opentelemetry-transport like this
+(note this needs to be added to existing pino config if available):
 
 ```javascript
 const transport = pino.transport({
