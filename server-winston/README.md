@@ -63,7 +63,7 @@ export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
-export NODE_OPTIONS="--require dotenv/config --require @opentelemetry/auto-instrumentations-node/register"
+export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 node server.js
 ```
 Without dotenv and using node command line to set requires
