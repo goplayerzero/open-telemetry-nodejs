@@ -62,7 +62,8 @@ export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
+export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
+export OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs"
 export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 node server.js
 ```
@@ -76,7 +77,8 @@ export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
+export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
+export OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs"
 node --require dotenv/config --require @opentelemetry/auto-instrumentations-node/register server.js
 ```
 
@@ -101,9 +103,9 @@ const logExporter = new OTLPLogExporter();
 const loggerProvider = new LoggerProvider({
 // without resource we don't have proper service.name, service.version correlated with logs
   resource: detectResourcesSync({
-// this have to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
-    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync],
-  }),
+// this has to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
+// see https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_resources.html
+    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync, osDetectorSync],  }),
 });
 
 loggerProvider.addLogRecordProcessor(

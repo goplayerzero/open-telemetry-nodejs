@@ -62,8 +62,9 @@ export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
-export NODE_OPTIONS="--require dotenv/config --require @opentelemetry/auto-instrumentations-node/register"
+export OTEL_NODE_RESOURCE_DETECTORS="env,host, process"
+export OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs"
+export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 node server.js
 ```
 Without dotenv and using node command line to set requires
@@ -77,7 +78,7 @@ export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
-node --require dotenv/config --require @opentelemetry/auto-instrumentations-node/register server.js
+node --require @opentelemetry/auto-instrumentations-node/register server.js
 ```
 
 Be sure to replace the <your PlayerZero ingest token with your token, and the

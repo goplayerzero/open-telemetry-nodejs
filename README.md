@@ -63,7 +63,8 @@ loggerProvider.addLogRecordProcessor(
 logsAPI.logs.setGlobalLoggerProvider(loggerProvider);
 ```
 
-For pino, add a transport with a target pino-opentelemetry-transport like this:
+For pino, add a transport with a target pino-opentelemetry-transport like this
+(note this needs to be added to existing pino config if available):
 
 ```javascript
 const transport = pino.transport({
@@ -101,9 +102,9 @@ const logger = pino(
 env variables). Note you should replace <Your process name here> with the 
 name of this process, like app-backend and the <Your PlayerZero ingest 
 token> with your PlayerZero ingest token which can be found at 
-https://go.playerzero.app/setting/web.  And for 
-OTEL_NODE_RESOURCE_DETECTORS variables, allowed values include: env, host, os, process, serviceinstance, container, 
-alibaba, aws, azure, gcp, as well as all and none.  See 
+https://go.playerzero.app/setting/web.  Note that we have disabled the fs instrumentation due to performance 
+overhead.  And for OTEL_NODE_RESOURCE_DETECTORS variables, allowed values include: env, host, os, process, 
+serviceinstance, container, alibaba, aws, azure, gcp, as well as all and none.  See 
 https://www.npmjs.com/package/@opentelemetry/auto-instrumentations-node for 
 documentation:
 
@@ -115,6 +116,40 @@ export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_RESOURCE_DETECTORS="env,host,os,process"
+export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
+export OTEL_NODE_DISABLED_INSTRUMENTATIONS="fs"
+```
+
+5. Require auto-instrumentation at node startup
+
+Due to the way open telemetry works, it must be loaded when node loads, not afterward.  
+You can do this by setting an environment variable before the node process starts
+or in a system like K8s:
+
+```shell
 export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 ```
+
+Or passing the require on the node command line:
+
+```shell
+node --require @opentelemetry/auto-instrumentations-node/register index.js
+```
+Or configuring your package.json to pass the require on start:
+
+```json
+"scripts": {
+    "start": "node --require @opentelemetry/auto-instrumentations-node/register server.js",
+  },
+```
+
+Finally, if you are using dotenv to manage configuration variables in step 4, you'll
+have to require that before you require auto-instrumentation.
+
+In the above examples, put -require dotenv/config  before
+--require @opentelemetry/auto-instrumentations-node/register
+
+```shell
+export NODE_OPTIONS="--require dotenv/config --require @opentelemetry/auto-instrumentations-node/register"
+```
+
