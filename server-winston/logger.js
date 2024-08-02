@@ -5,7 +5,7 @@ const {
   detectResourcesSync,
   envDetectorSync,
   processDetectorSync,
-  hostDetectorSync, osDetectorSync
+  hostDetectorSync
 } = require('@opentelemetry/resources');
 const logsAPI = require('@opentelemetry/api-logs');
 
@@ -17,7 +17,7 @@ const loggerProvider = new LoggerProvider({
   resource: detectResourcesSync({
 // this has to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
 // See https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_resources.html
-    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync, osDetectorSync],
+    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync],
   }),
 });
 
