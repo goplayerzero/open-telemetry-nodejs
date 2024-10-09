@@ -116,7 +116,7 @@ export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_ENABLED_INSTRUMENTATIONS="amqplib,aws-lambda,cassandra-driver,dataloader,graphql,http,memcached,mongodb,mysql,mysql2,pg,pino,winston"
+export OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-lambda,cassandra-driver,dataloader,graphql,http,mongodb,mysql,mysql2,pg,pino,winston"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
 ```
 
