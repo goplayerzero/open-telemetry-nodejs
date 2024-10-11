@@ -57,12 +57,12 @@ Without dotenv and using an environment variable to set config and requires
 ```bash
 export OTEL_SERVICE_NAME="<dataset namespace name>"
 export OTEL_EXPORTER_OTLP_ENDPOINT="https://sdk.playerzero.app/otlp"
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <your PlayerZero ingest token>"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <your PlayerZero ingest token>,X-PzProd=false"
 export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-lambda,cassandra-driver,dataloader,graphql,http,mongodb,mysql,mysql2,pg,pino,winston"
+export OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-lambda,cassandra-driver,dataloader,graphql,grpc,http,mongodb,mysql,mysql2,pg,pino,winston"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
 export NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 node server.js
@@ -72,18 +72,19 @@ Without dotenv and using node command line to set requires
 ```bash
 export OTEL_SERVICE_NAME="<dataset namespace name>"
 export OTEL_EXPORTER_OTLP_ENDPOINT="https://sdk.playerzero.app/otlp"
-export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <your PlayerZero ingest token>"
+export OTEL_EXPORTER_OTLP_HEADERS="Authorization=Bearer <your PlayerZero ingest token>,X-PzProd=false"
 export OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
 export OTEL_TRACES_EXPORTER="otlp"
 export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
-export OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-lambda,cassandra-driver,dataloader,graphql,http,mongodb,mysql,mysql2,pg,pino,winston"
+export OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-lambda,cassandra-driver,dataloader,graphql,grpc,http,mongodb,mysql,mysql2,pg,pino,winston"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
 node --require dotenv/config --require @opentelemetry/auto-instrumentations-node/register server.js
 ```
 
 Be sure to replace the <your PlayerZero ingest token with your token, and the
 dataset namespace name with the name of the application you are instrumenting.
+Also set X-PzProd=true for production deployments.
 
 In order to get logging sent to PlayerZero, you'll have to add the @opentelemetry/exporter-logs-otlp-proto
 package and add the following code:
