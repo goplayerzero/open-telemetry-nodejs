@@ -1,9 +1,11 @@
-# Express Pino OpenTelemetry Starter
+# Express Winston GRPC OpenTelemetry Starter
 
 
 
 This example shows how to instrument a NodeJS Express backend that uses
-Pino logging.
+Winston logging and calls a GRPC service.  Note that traces get created
+in browser, sent via the traceparentid header to the backend, then flow 
+get sent via grpc to the servergrpc microservice.
 
 ## Quick Start
 
@@ -79,7 +81,7 @@ export OTEL_METRICS_EXPORTER="otlp"
 export OTEL_LOGS_EXPORTER="otlp"
 export OTEL_NODE_ENABLED_INSTRUMENTATIONS="aws-lambda,cassandra-driver,dataloader,graphql,grpc,http,mongodb,mysql,mysql2,pg,pino,winston"
 export OTEL_NODE_RESOURCE_DETECTORS="env,host,process"
-node --require @opentelemetry/auto-instrumentations-node/register server.js
+node --require dotenv/config --require @opentelemetry/auto-instrumentations-node/register server.js
 ```
 
 Be sure to replace the <your PlayerZero ingest token with your token, and the
@@ -87,38 +89,32 @@ dataset namespace name with the name of the application you are instrumenting.
 Also set X-PzProd=true for production deployments.
 
 In order to get logging sent to PlayerZero, you'll have to add the @opentelemetry/exporter-logs-otlp-proto
-package and use something like the following as the pino transport:
+package and add the following code:
 
 ``` javascript
-const transport = pino.transport({
-  targets: [
-    {
-      target: 'pino-opentelemetry-transport',
-      options: {
-        logRecordProcessorOptions: [
-          {
-            recordProcessorType: 'batch',
-            exporterOptions: { protocol: 'http/protobuf' }
-          },
-          {
-            recordProcessorType: 'simple',
-            exporterOptions: { protocol: 'console' }
-          }
-        ],
-        loggerName: 'test-logger',
-        serviceVersion: '1.0.0'
-      }
-    }
-  ]
-})
+const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-proto');
+const { LoggerProvider, BatchLogRecordProcessor } = require('@opentelemetry/sdk-logs');
+const {
+  detectResourcesSync,
+  envDetectorSync,
+  processDetectorSync,
+  hostDetectorSync
+} = require('@opentelemetry/resources');
+const logsAPI = require('@opentelemetry/api-logs');
 
-const logger = pino(
-  {
-    level: 'debug',
-    timestamp: true
-  },
-  transport
-)
+const logExporter = new OTLPLogExporter();
+const loggerProvider = new LoggerProvider({
+// without resource we don't have proper service.name, service.version correlated with logs
+  resource: detectResourcesSync({
+// this has to be manually adjusted to match SDK OTEL_NODE_RESOURCE_DETECTORS
+// see https://open-telemetry.github.io/opentelemetry-js/modules/_opentelemetry_resources.html
+    detectors: [envDetectorSync, processDetectorSync, hostDetectorSync, osDetectorSync],  }),
+});
+
+loggerProvider.addLogRecordProcessor(
+  new BatchLogRecordProcessor(logExporter)
+);
+logsAPI.logs.setGlobalLoggerProvider(loggerProvider);
 ```
 
 ### Author
