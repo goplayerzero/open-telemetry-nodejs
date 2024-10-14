@@ -31,14 +31,7 @@ app.get('/api/customers', cors(), (req, res) => {
   logger.info('Express called');
 
   const request = new messages.HelloRequest();
-  let user;
-  if (process.argv.length >= 3) {
-    // eslint-disable-next-line prefer-destructuring
-    user = process.argv[2];
-  } else {
-    user = 'world';
-  }
-  request.setName(user);
+  request.setName('world');
   client.sayHello(request, (err, response) => {
     if (err) throw err;
     logger.info('GRPC sayHello greeting:'+ response.getMessage());

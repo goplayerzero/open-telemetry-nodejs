@@ -21,19 +21,10 @@ function startServer() {
 }
 
 function sayHello(call, callback) {
-  //const currentSpan = api.trace.getSpan(api.context.active());
-  // display traceid in the terminal
-  //console.log(`traceid: ${currentSpan.spanContext().traceId}`);
-  //const span = tracer.startSpan('server.js:sayHello()', {
-  //  kind: 1, // server
-  //  attributes: { key: 'value' },
-  //});
-  //span.addEvent(`invoking sayHello() to ${call.request.getName()}`);
   const reply = new messages.HelloReply();
   reply.setMessage(`Hello ${call.request.getName()}`);
   logger.info(`sayHello with name ${call.request.getName()}`)
   callback(null, reply);
-  //span.end();
 }
 
 startServer();
